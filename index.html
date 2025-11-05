@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High School Landing Page</title>
+
+    <style>
+        :root {
+            /* --- Define Core Design Tokens --- */
+            --accent-color: #005A9C; /* Placeholder Accent Color (A professional blue) */
+            --card-bg: #FFFFFF;
+            --page-bg: #F4F7F6;
+            --text-color: #333;
+            --light-text-color: #555;
+            --border-color: #EEEEEE;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --border-radius: 8px;
+        }
+
+        /* --- Global Reset & Body Styling --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background-color: var(--page-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* --- Page Header --- */
+        .page-header {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        /* --- Main Responsive Container (CSS Grid) --- */
+        .container {
+            display: grid;
+            /* Mobile-first: Single column by default.
+              On larger screens, this will be overridden.
+            */
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 0 1.5rem 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* --- Core Card/Block Styling --- */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            overflow: hidden; /* Ensures content stays within rounded corners */
+        }
+
+        .card h2 {
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        /* --- 1. RadioWiki Block Styling --- */
+        .radio-player iframe {
+            width: 100%;
+            height: 120px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--border-color); /* Placeholder background */
+        }
+        .radio-wiki p {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        /* --- 2. Blog Block Styling --- */
+        .blog-link {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .blog-link:hover {
+            background-color: #004170; /* Darker shade of accent */
+        }
+
+        .blog-post {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .blog-post:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .blog-post h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-color);
+        }
+
+        .blog-post p {
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+        }
+
+        /* --- 3. Weather Block Styling --- */
+        .weather-widget {
+            /* This div helps ensure the iframe is responsive */
+            width: 100%;
+        }
+        .weather-widget iframe {
+            width: 100%;
+            height: 250px; /* Default height for this specific SMN widget */
+            border: none;
+            border-radius: 4px;
+        }
+
+        /* --- 4. Project Gallery Block Styling --- */
+        .gallery-grid {
+            display: grid;
+            /* Mobile-first: 1 column */
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .gallery-card {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            overflow: hidden; /* To contain the image */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .gallery-card:hover {
+             box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .gallery-card img {
+            width: 100%;
+            height: 200px; /* Fixed height for visual consistency */
+            object-fit: cover; /* Ensures image covers the area */
+            display: block;
+            background-color: #ccc;
+        }
+
+        .gallery-card h3 {
+            padding: 1rem 1rem 0.25rem;
+            font-size: 1.1rem;
+        }
+
+        .gallery-card p {
+            padding: 0 1rem 1rem;
+            font-size: 0.9rem;
+            color: var(--light-text-color);
+        }
+
+        /* --- Responsive Media Queries --- */
+
+        /* Tablet (and up) */
+        @media (min-width: 768px) {
+            .container {
+                /* This creates a responsive grid. 
+                  It will fit as many columns as possible that are at least 350px wide.
+                  On most tablets, this will be 2 columns.
+                */
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+
+            .gallery-grid {
+                /* The inner gallery grid becomes 2 columns */
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Desktop */
+        @media (min-width: 1024px) {
+            /* On wide screens, force the project gallery to span the full width
+              to make room for its 3-column layout.
+            */
+            .project-gallery {
+                grid-column: 1 / -1; /* Spans all columns */
+            }
+
+            .gallery-grid {
+                /* The inner gallery grid becomes 3 columns */
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="page-header">
+        <h1>San Martín de los Andes High School</h1>
+    </header>
+
+    <main class="container">
+
+        <section class="card radio-wiki">
+            <h2>RadioWiki</h2>
+            <div class="radio-player">
+                <iframe 
+                    src="https://radio.example.com/stream" 
+                    title="RadioWiki Player"
+                    frameborder="0" 
+                    allowtransparency="true">
+                </iframe>
+            </div>
+            <p>Listen to our school's live broadcast!</p>
+        </section>
+
+        <section class="card blog">
+            <h2>School Blog</h2>
+            <a href="https://blog.example.com" class="blog-link" target="_blank" rel="noopener noreferrer">Visit the Full Blog &rarr;</a>
+            
+            <article class="blog-post">
+                <h3>Latest Post: Science Fair Winners</h3>
+                <p>See the innovative projects from this year's 10th-grade science fair...</p>
+            </article>
+            <article class="blog-post">
+                <h3>Guest Speaker: Local Author Visit</h3>
+                <p>We were honored to host renowned author Jane Doe for a Q&A session...</p>
+            </article>
+            <article class="blog-post">
+                <h3>Sports Day Recap</h3>
+                <p>A day of sun, teamwork, and school spirit. Check out the photos...</p>
+            </article>
+        </section>
+
+        <section class="card weather">
+            <h2>Weather in San Martín de los Andes</h2>
+            <div class="weather-widget">
+                <iframe 
+                    src="https://www.smn.gob.ar/widget/v1/smn-forecast-simple/87765" 
+                    title="SMN Weather Forecast"
+                    frameborder="0" 
+                    scrolling="no">
+                </iframe>
+            </div>
+        </section>
+
+        <section class="card project-gallery">
+            <h2>School Projects Gallery</h2>
+            <div class="gallery-grid">
+
+                <div class="gallery-card">
+                    <img src="https://via.placeholder.com/400x300/90BE6D/FFFFFF?text=Composting" alt="Students composting organic waste">
+                    <h3>Composting Initiative</h3>
+                    <p>Our environmental club's new program to reduce school waste and enrich our garden.</p>
+                </div>
+
+                <div class="gallery-card">
+                    <img src="https://via.placeholder.com/400x300/4D908E/FFFFFF?text=Web+Design" alt="Students coding a website on laptops">
+                    <h3>Website Design with FullCoders</h3>
+                    <p>Students partnered with the FullCoders program to learn HTML, CSS, and JavaScript.</p>
+                </div>
+
+                <div class="gallery-card">
+                    <img src="https://via.placeholder.com/400x300/F9C74F/FFFFFF?text=Mural+Painting" alt="A colorful mural on a school wall">
+                    <h3>Mural Painting by Graduating Students</h3>
+                    <p>The class of 2025 leaves their artistic mark on the main hall with this beautiful mural.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Minimal JavaScript to show that the script tag is working.
+        // You can add simple interactivity here, like a mobile menu toggle.
+        document.addEventListener('DOMContentLoaded', (event) => {
+            console.log('High School Landing Page Loaded Successfully!');
+        });
+    </script>
+
+</body>
+</html>
