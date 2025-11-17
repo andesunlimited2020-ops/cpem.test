@@ -8,7 +8,7 @@
     <style>
         :root {
             /* --- Define Core Design Tokens --- */
-            --accent-color: #005A9C; /* Placeholder Accent Color (A professional blue) */
+            --accent-color: #005A9C; 
             --card-bg: #FFFFFF;
             --page-bg: #F4F7F6;
             --text-color: #333;
@@ -49,9 +49,6 @@
         /* --- Main Responsive Container (CSS Grid) --- */
         .container {
             display: grid;
-            /* Mobile-first: Single column by default.
-              On larger screens, this will be overridden.
-            */
             grid-template-columns: 1fr;
             gap: 1.5rem;
             padding: 0 1.5rem 1.5rem;
@@ -65,7 +62,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             padding: 1.5rem;
-            overflow: hidden; /* Ensures content stays within rounded corners */
+            overflow: hidden;
         }
 
         .card h2 {
@@ -82,7 +79,7 @@
             height: 120px;
             border: none;
             border-radius: 4px;
-            background-color: var(--border-color); /* Placeholder background */
+            background-color: var(--border-color);
         }
         .radio-wiki p {
             font-size: 0.9rem;
@@ -105,7 +102,7 @@
         }
 
         .blog-link:hover {
-            background-color: #004170; /* Darker shade of accent */
+            background-color: #004170;
         }
 
         .blog-post {
@@ -133,12 +130,11 @@
 
         /* --- 3. Weather Block Styling --- */
         .weather-widget {
-            /* This div helps ensure the iframe is responsive */
             width: 100%;
         }
         .weather-widget iframe {
             width: 100%;
-            height: 250px; /* Default height for this specific SMN widget */
+            height: 250px;
             border: none;
             border-radius: 4px;
         }
@@ -146,7 +142,6 @@
         /* --- 4. Project Gallery Block Styling --- */
         .gallery-grid {
             display: grid;
-            /* Mobile-first: 1 column */
             grid-template-columns: 1fr;
             gap: 1.5rem;
         }
@@ -154,7 +149,7 @@
         .gallery-card {
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius);
-            overflow: hidden; /* To contain the image */
+            overflow: hidden;
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
             transition: box-shadow 0.3s ease;
         }
@@ -165,8 +160,8 @@
 
         .gallery-card img {
             width: 100%;
-            height: 200px; /* Fixed height for visual consistency */
-            object-fit: cover; /* Ensures image covers the area */
+            height: 200px;
+            object-fit: cover;
             display: block;
             background-color: #ccc;
         }
@@ -182,127 +177,87 @@
             color: var(--light-text-color);
         }
 
-        /* --- Responsive Media Queries --- */
-
-        /* Tablet (and up) */
-        @media (min-width: 768px) {
-            .container {
-                /* This creates a responsive grid. 
-                  It will fit as many columns as possible that are at least 350px wide.
-                  On most tablets, this will be 2 columns.
-                */
-                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            }
-
-            .gallery-grid {
-                /* The inner gallery grid becomes 2 columns */
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Desktop */
-        @media (min-width: 1024px) {
-            /* On wide screens, force the project gallery to span the full width
-              to make room for its 3-column layout.
-            */
-            .project-gallery {
-                grid-column: 1 / -1; /* Spans all columns */
-            }
-
-            .gallery-grid {
-                /* The inner gallery grid becomes 3 columns */
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-    </style>
-    /*Juego de las nubes*/
-     <title>Juego de Nubes</title>
-    <!-- Cargamos Tailwind CSS para el estilo general -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* CSS personalizado para la forma de la nube y las animaciones */
+        /* --- 5. CLOUD GAME SPECIFIC STYLES (ISOLATED) --- */
+        /* Note: I removed Tailwind to prevent it from ruining the rest of the site styles */
         
-        /* Ocultamos la barra de scroll y evitamos que el usuario seleccione texto */
-        body {
-            overflow: hidden;
+        #cloud-game-section {
+            grid-column: 1 / -1; /* Force full width on grid */
+            min-height: 500px;
+            background-color: #93C5FD; /* Tailwind 'blue-300' equivalent */
+            position: relative; /* Critical for game positioning */
+            overflow: hidden; /* Keeps clouds inside the box */
+            border-radius: var(--border-radius);
             user-select: none;
             -webkit-user-select: none;
-            -ms-user-select: none;
-        }
-
-        #game-container {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
+            cursor: crosshair;
         }
 
         .cloud {
-            /* Dimensiones base de la nube */
             width: 120px;
             height: 70px;
-            
-            /* Usamos una variable CSS para el color, con un blanco por defecto */
             --cloud-color: #ffffff;
             background: var(--cloud-color);
-            
             border-radius: 50%;
-            position: absolute;
+            position: absolute; /* Absolute relative to #cloud-game-section */
             cursor: pointer;
-            
-            /* Transiciones para la aparición/desaparición y el color */
             transition: opacity 0.4s ease-out, transform 0.4s ease-out, background-color 0.3s ease;
-            
-            /* Sombra suave */
             filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-            
-            /* Estado inicial para la animación de entrada */
             opacity: 0;
             transform: scale(0.8);
+            z-index: 10;
         }
 
-        /* Pseudo-elementos para crear la forma "esponjosa" de la nube */
         .cloud::before,
         .cloud::after {
             content: '';
             position: absolute;
-            /* Heredan el color de la variable del elemento padre */
             background: var(--cloud-color);
             border-radius: 50%;
-            /* Hacemos que también hereden la transición de color */
             transition: background-color 0.3s ease;
         }
 
         .cloud::before {
             width: 70px;
             height: 70px;
-            top: -30px; /* Arriba */
-            left: 20px; /* Ligeramente a la izquierda */
+            top: -30px;
+            left: 20px;
         }
 
         .cloud::after {
             width: 80px;
             height: 80px;
-            top: -25px; /* Arriba */
-            right: 10px; /* Ligeramente a la derecha */
+            top: -25px;
+            right: 10px;
         }
 
-        /* Clase para la nube verde especial */
-        .cloud-green {
-            --cloud-color: #a7f3d0; /* Un verde pastel (Tailwind green-200) */
-        }
-
-        /* Clase para la nube blanca inicial */
-        .cloud-white {
-            --cloud-color: #ffffff;
-        }
-
-        /* Clase para la animación de desvanecimiento */
+        .cloud-green { --cloud-color: #a7f3d0; }
+        .cloud-white { --cloud-color: #ffffff; }
+        
         .cloud-fading {
             opacity: 0;
             transform: scale(0.7);
+            pointer-events: none;
+        }
+
+        /* --- Responsive Media Queries --- */
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .project-gallery {
+                grid-column: 1 / -1; 
+            }
+            .gallery-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
-
 </head>
 <body>
 
@@ -327,7 +282,7 @@
 
         <section class="card blog">
             <h2>School Blog</h2>
-            <a href="https://blog.example.com" class="blog-link" target="_blank" rel="noopener noreferrer">Visit the Full Blog &rarr;</a>
+            <a href="#" class="blog-link">Visit the Full Blog &rarr;</a>
             
             <article class="blog-post">
                 <h3>Latest Post: Science Fair Winners</h3>
@@ -336,10 +291,6 @@
             <article class="blog-post">
                 <h3>Guest Speaker: Local Author Visit</h3>
                 <p>We were honored to host renowned author Jane Doe for a Q&A session...</p>
-            </article>
-            <article class="blog-post">
-                <h3>Sports Day Recap</h3>
-                <p>A day of sun, teamwork, and school spirit. Check out the photos...</p>
             </article>
         </section>
 
@@ -358,197 +309,127 @@
         <section class="card project-gallery">
             <h2>School Projects Gallery</h2>
             <div class="gallery-grid">
-
                 <div class="gallery-card">
-                    <img src="https://via.placeholder.com/400x300/90BE6D/FFFFFF?text=Composting" alt="Students composting organic waste">
+                    <img src="https://via.placeholder.com/400x300/90BE6D/FFFFFF?text=Composting" alt="Students composting">
                     <h3>Composting Initiative</h3>
-                    <p>Our environmental club's new program to reduce school waste and enrich our garden.</p>
+                    <p>Our environmental club's new program to reduce school waste.</p>
                 </div>
-
                 <div class="gallery-card">
-                    <img src="https://via.placeholder.com/400x300/4D908E/FFFFFF?text=Web+Design" alt="Students coding a website on laptops">
-                    <h3>Website Design with FullCoders</h3>
-                    <p>Students partnered with the FullCoders program to learn HTML, CSS, and JavaScript.</p>
+                    <img src="https://via.placeholder.com/400x300/4D908E/FFFFFF?text=Web+Design" alt="Students coding">
+                    <h3>Website Design</h3>
+                    <p>Students partnered with the FullCoders program.</p>
                 </div>
-
                 <div class="gallery-card">
-                    <img src="https://via.placeholder.com/400x300/F9C74F/FFFFFF?text=Mural+Painting" alt="A colorful mural on a school wall">
-                    <h3>Mural Painting by Graduating Students</h3>
-                    <p>The class of 2025 leaves their artistic mark on the main hall with this beautiful mural.</p>
+                    <img src="https://via.placeholder.com/400x300/F9C74F/FFFFFF?text=Mural+Painting" alt="Mural painting">
+                    <h3>Mural Painting</h3>
+                    <p>The class of 2025 leaves their artistic mark.</p>
                 </div>
-
             </div>
         </section>
-        <section class="bg-blue-300"> <!-- Fondo de color cielo -->
 
-    <!-- Contenedor principal del juego -->
-    <div id="game-container"></div>
+        <div id="cloud-game-section">
+            <h2 style="position:absolute; top:10px; left:20px; z-index:5; color:white; font-size:1.2rem;">Relax: Pop the Clouds</h2>
+            </div>
+        </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const gameContainer = document.getElementById('game-container');
-            let greenCloudTimer; // Variable para guardar el temporizador de la nube verde
+        // We use an IIFE (Immediately Invoked Function Expression)
+        // This creates a "private bubble" for the game code.
+        // Variables here (like 'createCloud') will NOT conflict with other scripts on the page.
+        (function() {
+            const gameContainer = document.getElementById('cloud-game-section');
+            let greenCloudTimer;
 
-            /**
-             * Inicia o reinicia el juego
-             */
             function startGame() {
-                // Limpiamos nubes existentes y temporizadores
-                gameContainer.innerHTML = '';
-                if (greenCloudTimer) {
-                    clearTimeout(greenCloudTimer);
-                }
+                gameContainer.innerHTML = '<h2 style="position:absolute; top:10px; left:20px; z-index:5; color:white; font-size:1.2rem; opacity:0.8;">Relax: Pop the Clouds</h2>';
+                if (greenCloudTimer) clearTimeout(greenCloudTimer);
                 
-                // Creamos la primera nube blanca
                 createCloud(false, true);
-                
-                // Programamos la primera nube verde
                 scheduleNextGreenCloud();
             }
 
-            /**
-             * Crea una nueva nube en una posición aleatoria
-             * @param {boolean} isGreen - Si la nube debe ser verde
-             * @param {boolean} isWhite - Si la nube debe ser blanca
-             */
             function createCloud(isGreen = false, isWhite = false) {
                 const cloud = document.createElement('div');
                 cloud.className = 'cloud';
 
-                if (isGreen) {
-                    cloud.classList.add('cloud-green');
-                } else if (isWhite) {
-                    cloud.classList.add('cloud-white');
-                } else {
-                    // Asignamos un color aleatorio HSL (tonos pastel)
+                if (isGreen) cloud.classList.add('cloud-green');
+                else if (isWhite) cloud.classList.add('cloud-white');
+                else {
                     const hue = Math.floor(Math.random() * 360);
-                    const color = `hsl(${hue}, 70%, 85%)`;
-                    cloud.style.setProperty('--cloud-color', color);
+                    cloud.style.setProperty('--cloud-color', `hsl(${hue}, 70%, 85%)`);
                 }
 
-                // Posicionamiento aleatorio, asegurando que quepa en la pantalla
-                const margin = 150; // Margen para que no aparezca en los bordes
-                const randomTop = Math.random() * (window.innerHeight - margin) + (margin / 2);
-                const randomLeft = Math.random() * (window.innerWidth - margin) + (margin / 2);
+                // CRITICAL CHANGE: Calculate position based on the CONTAINER size, not the WINDOW size
+                const containerWidth = gameContainer.clientWidth;
+                const containerHeight = gameContainer.clientHeight;
+                const cloudSize = 120; // approx width
+
+                const randomTop = Math.random() * (containerHeight - cloudSize);
+                const randomLeft = Math.random() * (containerWidth - cloudSize);
 
                 cloud.style.top = `${randomTop}px`;
                 cloud.style.left = `${randomLeft}px`;
 
-                // Usamos 'pointerdown' que funciona para mouse y táctil
                 cloud.addEventListener('pointerdown', onCloudClick);
-
                 gameContainer.appendChild(cloud);
 
-                // Forzamos un reflow para que la animación de entrada funcione
                 setTimeout(() => {
                     cloud.style.opacity = '1';
                     cloud.style.transform = 'scale(1)';
                 }, 10);
             }
 
-            /**
-             * Maneja el evento de clic o toque en una nube
-             */
             function onCloudClick(e) {
                 const clickedCloud = e.currentTarget;
-
-                // Evitar doble clic mientras se desvanece
-                if (clickedCloud.classList.contains('cloud-fading')) {
-                    return;
-                }
+                if (clickedCloud.classList.contains('cloud-fading')) return;
 
                 if (clickedCloud.classList.contains('cloud-green')) {
-                    // Si es la nube verde, reiniciar el juego
                     resetGame();
                 } else {
-                    // Si es una nube normal, dividirla
                     splitCloud(clickedCloud);
                 }
             }
 
-            /**
-             * Lógica para dividir una nube
-             */
             function splitCloud(cloud) {
-                // 1. Añadir clase de desvanecimiento
                 cloud.classList.add('cloud-fading');
-                // 2. Quitar el listener para no poder volver a clicarla
                 cloud.removeEventListener('pointerdown', onCloudClick);
-
-                // 3. Eliminar la nube del DOM después de la animación
-                setTimeout(() => {
-                    cloud.remove();
-                }, 400); // Coincide con la duración de la transición CSS
-
-                // 4. Crear dos nubes nuevas
+                
+                setTimeout(() => cloud.remove(), 400);
                 createCloud();
                 createCloud();
             }
 
-            /**
-             * Reinicia el juego (usado por la nube verde)
-             */
             function resetGame() {
-                // Desvanecer todas las nubes actuales
                 const allClouds = gameContainer.querySelectorAll('.cloud');
                 allClouds.forEach(cloud => {
                     cloud.classList.add('cloud-fading');
                     cloud.removeEventListener('pointerdown', onCloudClick);
                     setTimeout(() => cloud.remove(), 400);
                 });
-
-                // Empezar de nuevo después de que se limpien
-                setTimeout(() => {
-                    startGame();
-                }, 450);
+                setTimeout(() => startGame(), 450);
             }
 
-            /**
-             * Programa la aparición de la próxima nube verde
-             */
             function scheduleNextGreenCloud() {
-                // Tiempo aleatorio entre 5 y 15 segundos
                 const randomTime = Math.random() * 10000 + 5000;
-                
                 greenCloudTimer = setTimeout(() => {
-                    createCloud(true); // Crea una nube verde
-                    scheduleNextGreenCloud(); // Vuelve a programar la siguiente
+                    if(document.body.contains(gameContainer)) { // Check if game still exists
+                        createCloud(true);
+                        scheduleNextGreenCloud();
+                    }
                 }, randomTime);
             }
 
-            // Iniciar el juego cuando la página cargue
+            // Start the game
             startGame();
 
-            // Opcional: Reajustar nubes si la ventana cambia de tamaño (para evitar que se salgan)
-            window.addEventListener('resize', () => {
-                const allClouds = gameContainer.querySelectorAll('.cloud');
-                allClouds.forEach(cloud => {
-                    const top = parseInt(cloud.style.top, 10);
-                    const left = parseInt(cloud.style.left, 10);
-
-                    if (top > window.innerHeight - 100) {
-                        cloud.style.top = `${window.innerHeight - 100}px`;
-                    }
-                    if (left > window.innerWidth - 120) {
-                        cloud.style.left = `${window.innerWidth - 120}px`;
-                    }
-                });
-            });
-        });
+        })(); // End of Isolated Scope
     </script>
 
-    </section>
-
-    </main>
-
     <script>
-        // Minimal JavaScript to show that the script tag is working.
-        // You can add simple interactivity here, like a mobile menu toggle.
         document.addEventListener('DOMContentLoaded', (event) => {
             console.log('High School Landing Page Loaded Successfully!');
         });
     </script>
 
 </body>
-
 </html>
