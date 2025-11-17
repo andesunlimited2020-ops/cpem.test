@@ -215,6 +215,94 @@
             }
         }
     </style>
+    /*Juego de las nubes*/
+     <title>Juego de Nubes</title>
+    <!-- Cargamos Tailwind CSS para el estilo general -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* CSS personalizado para la forma de la nube y las animaciones */
+        
+        /* Ocultamos la barra de scroll y evitamos que el usuario seleccione texto */
+        body {
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+        #game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .cloud {
+            /* Dimensiones base de la nube */
+            width: 120px;
+            height: 70px;
+            
+            /* Usamos una variable CSS para el color, con un blanco por defecto */
+            --cloud-color: #ffffff;
+            background: var(--cloud-color);
+            
+            border-radius: 50%;
+            position: absolute;
+            cursor: pointer;
+            
+            /* Transiciones para la aparición/desaparición y el color */
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out, background-color 0.3s ease;
+            
+            /* Sombra suave */
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+            
+            /* Estado inicial para la animación de entrada */
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        /* Pseudo-elementos para crear la forma "esponjosa" de la nube */
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            /* Heredan el color de la variable del elemento padre */
+            background: var(--cloud-color);
+            border-radius: 50%;
+            /* Hacemos que también hereden la transición de color */
+            transition: background-color 0.3s ease;
+        }
+
+        .cloud::before {
+            width: 70px;
+            height: 70px;
+            top: -30px; /* Arriba */
+            left: 20px; /* Ligeramente a la izquierda */
+        }
+
+        .cloud::after {
+            width: 80px;
+            height: 80px;
+            top: -25px; /* Arriba */
+            right: 10px; /* Ligeramente a la derecha */
+        }
+
+        /* Clase para la nube verde especial */
+        .cloud-green {
+            --cloud-color: #a7f3d0; /* Un verde pastel (Tailwind green-200) */
+        }
+
+        /* Clase para la nube blanca inicial */
+        .cloud-white {
+            --cloud-color: #ffffff;
+        }
+
+        /* Clase para la animación de desvanecimiento */
+        .cloud-fading {
+            opacity: 0;
+            transform: scale(0.7);
+        }
+    </style>
+
 </head>
 <body>
 
@@ -291,6 +379,165 @@
 
             </div>
         </section>
+        <section class="bg-blue-300"> <!-- Fondo de color cielo -->
+
+    <!-- Contenedor principal del juego -->
+    <div id="game-container"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const gameContainer = document.getElementById('game-container');
+            let greenCloudTimer; // Variable para guardar el temporizador de la nube verde
+
+            /**
+             * Inicia o reinicia el juego
+             */
+            function startGame() {
+                // Limpiamos nubes existentes y temporizadores
+                gameContainer.innerHTML = '';
+                if (greenCloudTimer) {
+                    clearTimeout(greenCloudTimer);
+                }
+                
+                // Creamos la primera nube blanca
+                createCloud(false, true);
+                
+                // Programamos la primera nube verde
+                scheduleNextGreenCloud();
+            }
+
+            /**
+             * Crea una nueva nube en una posición aleatoria
+             * @param {boolean} isGreen - Si la nube debe ser verde
+             * @param {boolean} isWhite - Si la nube debe ser blanca
+             */
+            function createCloud(isGreen = false, isWhite = false) {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+
+                if (isGreen) {
+                    cloud.classList.add('cloud-green');
+                } else if (isWhite) {
+                    cloud.classList.add('cloud-white');
+                } else {
+                    // Asignamos un color aleatorio HSL (tonos pastel)
+                    const hue = Math.floor(Math.random() * 360);
+                    const color = `hsl(${hue}, 70%, 85%)`;
+                    cloud.style.setProperty('--cloud-color', color);
+                }
+
+                // Posicionamiento aleatorio, asegurando que quepa en la pantalla
+                const margin = 150; // Margen para que no aparezca en los bordes
+                const randomTop = Math.random() * (window.innerHeight - margin) + (margin / 2);
+                const randomLeft = Math.random() * (window.innerWidth - margin) + (margin / 2);
+
+                cloud.style.top = `${randomTop}px`;
+                cloud.style.left = `${randomLeft}px`;
+
+                // Usamos 'pointerdown' que funciona para mouse y táctil
+                cloud.addEventListener('pointerdown', onCloudClick);
+
+                gameContainer.appendChild(cloud);
+
+                // Forzamos un reflow para que la animación de entrada funcione
+                setTimeout(() => {
+                    cloud.style.opacity = '1';
+                    cloud.style.transform = 'scale(1)';
+                }, 10);
+            }
+
+            /**
+             * Maneja el evento de clic o toque en una nube
+             */
+            function onCloudClick(e) {
+                const clickedCloud = e.currentTarget;
+
+                // Evitar doble clic mientras se desvanece
+                if (clickedCloud.classList.contains('cloud-fading')) {
+                    return;
+                }
+
+                if (clickedCloud.classList.contains('cloud-green')) {
+                    // Si es la nube verde, reiniciar el juego
+                    resetGame();
+                } else {
+                    // Si es una nube normal, dividirla
+                    splitCloud(clickedCloud);
+                }
+            }
+
+            /**
+             * Lógica para dividir una nube
+             */
+            function splitCloud(cloud) {
+                // 1. Añadir clase de desvanecimiento
+                cloud.classList.add('cloud-fading');
+                // 2. Quitar el listener para no poder volver a clicarla
+                cloud.removeEventListener('pointerdown', onCloudClick);
+
+                // 3. Eliminar la nube del DOM después de la animación
+                setTimeout(() => {
+                    cloud.remove();
+                }, 400); // Coincide con la duración de la transición CSS
+
+                // 4. Crear dos nubes nuevas
+                createCloud();
+                createCloud();
+            }
+
+            /**
+             * Reinicia el juego (usado por la nube verde)
+             */
+            function resetGame() {
+                // Desvanecer todas las nubes actuales
+                const allClouds = gameContainer.querySelectorAll('.cloud');
+                allClouds.forEach(cloud => {
+                    cloud.classList.add('cloud-fading');
+                    cloud.removeEventListener('pointerdown', onCloudClick);
+                    setTimeout(() => cloud.remove(), 400);
+                });
+
+                // Empezar de nuevo después de que se limpien
+                setTimeout(() => {
+                    startGame();
+                }, 450);
+            }
+
+            /**
+             * Programa la aparición de la próxima nube verde
+             */
+            function scheduleNextGreenCloud() {
+                // Tiempo aleatorio entre 5 y 15 segundos
+                const randomTime = Math.random() * 10000 + 5000;
+                
+                greenCloudTimer = setTimeout(() => {
+                    createCloud(true); // Crea una nube verde
+                    scheduleNextGreenCloud(); // Vuelve a programar la siguiente
+                }, randomTime);
+            }
+
+            // Iniciar el juego cuando la página cargue
+            startGame();
+
+            // Opcional: Reajustar nubes si la ventana cambia de tamaño (para evitar que se salgan)
+            window.addEventListener('resize', () => {
+                const allClouds = gameContainer.querySelectorAll('.cloud');
+                allClouds.forEach(cloud => {
+                    const top = parseInt(cloud.style.top, 10);
+                    const left = parseInt(cloud.style.left, 10);
+
+                    if (top > window.innerHeight - 100) {
+                        cloud.style.top = `${window.innerHeight - 100}px`;
+                    }
+                    if (left > window.innerWidth - 120) {
+                        cloud.style.left = `${window.innerWidth - 120}px`;
+                    }
+                });
+            });
+        });
+    </script>
+
+    </section>
 
     </main>
 
@@ -303,4 +550,5 @@
     </script>
 
 </body>
+
 </html>
